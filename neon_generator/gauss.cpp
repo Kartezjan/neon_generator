@@ -5,7 +5,7 @@ std::vector<std::vector<double>> generate_gauss_kernel(double spread, size_t ran
 	if (!range_y)
 	range_y = range_x;
 
-	std::vector<std::vector<std::pair<int, int> > > index; //That's a little bit insane, but why worry? tip: (x, y)
+	std::vector<std::vector<std::pair<int, int> > > index;
 	auto max_index_x = range_x / 2;
 	auto max_index_y = range_y / 2;
 
