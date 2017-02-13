@@ -14,6 +14,7 @@ Generates light effects (neons) from pixels.
 Separate colours with return character (\n). Separate RGBA values with space. 
 
 example:
+
 0 255 255 255
 
 255 0 0 255
