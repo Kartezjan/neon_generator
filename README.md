@@ -15,11 +15,17 @@ Separate colours with return character (\n). Separate RGBA values with space.
 
 example:
 0 255 255 255
+
 255 0 0 255
+
 255 0 255 255
+
 0 255 174 255
+
 255 0 228 255
+
 0 198 255 255
+
 
 ##Example use
 
