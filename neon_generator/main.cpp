@@ -91,7 +91,10 @@ vector<pixel_index> hide_undesired_pixels(Mat& img, const vector<rgba>& color_wh
 
 void make_light(Mat& img, double spread, size_t range_x, size_t range_y, double intensity , vector<pixel_index> pixels)
 {
-	const auto kernel = generate_gauss_kernel(spread, range_x, range_y);
+	size_t kernel_x = range_x > img.cols ? img.cols : range_x;
+	size_t kernel_y = range_y > img.cols ? img.cols : range_y;
+
+	const auto kernel = generate_gauss_kernel(spread, kernel_x, kernel_y);
 
 	vector<Vec4b> pixel_colors;
 	for(const auto& pixel : pixels)
@@ -106,11 +109,11 @@ void make_light(Mat& img, double spread, size_t range_x, size_t range_y, double 
 		for (size_t y = 0; y < kernel.size(); ++y)
 			for (size_t x = 0; x < kernel[y].size(); ++x)
 			{
-				int current_index_y = pixel.y + y - range_y / 2;
+				int current_index_y = pixel.y + y - kernel_y / 2;
 				if (current_index_y < 0 || current_index_y >= img.rows)
 					continue;
 
-				int current_index_x = pixel.x + x - range_x / 2;
+				int current_index_x = pixel.x + x - kernel_x / 2;
 				if (current_index_x < 0 || current_index_x >= img.cols)
 					continue;
 
