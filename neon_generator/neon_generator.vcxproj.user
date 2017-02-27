@@ -5,7 +5,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommandArguments>cyan_charge.png output.png whitelist.txt 4 11 11 200.0f</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>cyan_charge.png output.png whitelist.txt 400 500 500 500000.0f</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

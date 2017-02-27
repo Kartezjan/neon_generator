@@ -89,12 +89,29 @@ vector<pixel_index> hide_undesired_pixels(Mat& img, const vector<rgba>& color_wh
 	return result;
 }
 
+void resize_image(Mat& img, size_t cols, size_t rows)
+{
+	Mat copy_mat;
+	copy_mat.create(cols, rows, img.type());
+	copy_mat.setTo(cv::Scalar(0, 0, 0, 0));
+
+	auto offset_x = abs((cols - img.cols) / 2);
+	auto offset_y = abs((rows - img.rows) / 2);
+
+	for (size_t y = 0; y < img.rows; ++y)
+		for (size_t x = 0; x < img.cols; ++x)
+		{
+			cv::Vec4b & img_pixel = img.at<cv::Vec4b>(y, x);
+			cv::Vec4b & resized_img_pixel = copy_mat.at<cv::Vec4b>(y + offset_y, x + offset_y);
+			resized_img_pixel = img_pixel;
+		}
+
+	img = copy_mat;
+}
+
 void make_light(Mat& img, double spread, size_t range_x, size_t range_y, double intensity , vector<pixel_index> pixels)
 {
-	size_t kernel_x = range_x > img.cols ? img.cols : range_x;
-	size_t kernel_y = range_y > img.cols ? img.cols : range_y;
-
-	const auto kernel = generate_gauss_kernel(spread, kernel_x, kernel_y);
+	const auto kernel = generate_gauss_kernel(spread, range_x, range_y);
 
 	vector<Vec4b> pixel_colors;
 	for(const auto& pixel : pixels)
@@ -109,11 +126,11 @@ void make_light(Mat& img, double spread, size_t range_x, size_t range_y, double 
 		for (size_t y = 0; y < kernel.size(); ++y)
 			for (size_t x = 0; x < kernel[y].size(); ++x)
 			{
-				int current_index_y = pixel.y + y - kernel_y / 2;
+				int current_index_y = pixel.y + y - range_y / 2;
 				if (current_index_y < 0 || current_index_y >= img.rows)
 					continue;
 
-				int current_index_x = pixel.x + x - kernel_x / 2;
+				int current_index_x = pixel.x + x - range_x / 2;
 				if (current_index_x < 0 || current_index_x >= img.cols)
 					continue;
 
@@ -158,9 +175,16 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
+	auto range_x = strtoll(argv[5], nullptr, 10) * 2;
+	auto range_y = strtoll(argv[6], nullptr, 10) * 2;
+	auto deviation = atof(argv[4]);
+	auto amplifier = atof(argv[7]);
+
 	auto color_whitelist = load_colour_whitelist_from_file(argv[3]); /*{ rgba{0,255,255,255}, rgba{ 255, 0, 0, 255 }, rgba{ 255, 0, 255, 255 }, rgba {0, 255, 174}, rgba{ 255, 0, 228 }, {0, 198, 255} };*/
+	if (range_x > image.cols || range_y > image.rows)
+		resize_image(image, range_x, range_y);
 	auto pixels = hide_undesired_pixels(image, color_whitelist);
-	make_light(image, atof(argv[4]), strtoll(argv[5], nullptr, 10) * 2, strtoll(argv[6], nullptr, 10) * 2, atof(argv[7]), pixels);
+	make_light(image, deviation, range_x, range_y, amplifier, pixels);
 
 
 	vector<int> compression_params;
