@@ -91,12 +91,21 @@ vector<pixel_index> hide_undesired_pixels(Mat& img, const vector<rgba>& color_wh
 
 void resize_image(Mat& img, size_t cols, size_t rows)
 {
+	if (cols < img.cols)
+		cols = img.cols;
+	if (rows < img.rows)
+		rows = img.rows;
+
 	Mat copy_mat;
 	copy_mat.create(cols, rows, img.type());
 	copy_mat.setTo(cv::Scalar(0, 0, 0, 0));
 
-	auto offset_x = abs((cols - img.cols) / 2);
-	auto offset_y = abs((rows - img.rows) / 2);
+	int offset_x = static_cast<int>(cols - img.cols) / 2;
+	if (offset_x < 0)
+		offset_x = 0;
+	int offset_y = static_cast<int>(rows - img.rows) / 2;
+	if (offset_y < 0)
+		offset_y = 0;
 
 	for (size_t y = 0; y < img.rows; ++y)
 		for (size_t x = 0; x < img.cols; ++x)
