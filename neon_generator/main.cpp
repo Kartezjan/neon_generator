@@ -91,10 +91,8 @@ vector<pixel_index> hide_undesired_pixels(Mat& img, const vector<rgba>& color_wh
 
 void resize_image(Mat& img, size_t cols, size_t rows)
 {
-	if (cols < img.cols)
-		cols = img.cols;
-	if (rows < img.rows)
-		rows = img.rows;
+	cols = img.cols + cols*2;
+	rows = img.rows + rows*2;
 
 	Mat copy_mat;
 	copy_mat.create(cols, rows, img.type());
@@ -190,8 +188,7 @@ int main(int argc, char** argv)
 	auto amplifier = atof(argv[7]);
 
 	auto color_whitelist = load_colour_whitelist_from_file(argv[3]); /*{ rgba{0,255,255,255}, rgba{ 255, 0, 0, 255 }, rgba{ 255, 0, 255, 255 }, rgba {0, 255, 174}, rgba{ 255, 0, 228 }, {0, 198, 255} };*/
-	if (range_x > image.cols || range_y > image.rows)
-		resize_image(image, range_x, range_y);
+	resize_image(image, range_x, range_y);
 	auto pixels = hide_undesired_pixels(image, color_whitelist);
 	make_light(image, deviation, range_x, range_y, amplifier, pixels);
 
